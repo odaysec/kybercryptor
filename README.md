@@ -82,6 +82,41 @@ Successfully encrypted message to kyber_encrypted.dat
 $ python decrypt.py
 Decrypted message: Kyber
 ```
+## 🔄 Process Flow
+
+### Encryption Workflow
+```mermaid
+sequenceDiagram
+    participant User
+    participant Encrypt.py
+    participant OQS
+    participant File
+    
+    User->>Encrypt.py: Execute script
+    Encrypt.py->>OQS: Generate Kyber512 keypair
+    OQS-->>Encrypt.py: (pk, sk)
+    Encrypt.py->>OQS: Encapsulate shared secret
+    OQS-->>Encrypt.py: ciphertext, ss
+    Encrypt.py->>Encrypt.py: XOR encrypt message (msg ⊕ ss)
+    Encrypt.py->>File: Save pk + ciphertext + encrypted_msg
+```
+
+### Decryption Workflow
+```mermaid
+sequenceDiagram
+    participant User
+    participant Decrypt.py
+    participant OQS
+    participant File
+    
+    User->>Decrypt.py: Execute script
+    Decrypt.py->>File: Load encrypted data
+    Decrypt.py->>OQS: Decapsulate shared secret (sk, ciphertext)
+    OQS-->>Decrypt.py: ss
+    Decrypt.py->>Decrypt.py: XOR decrypt message (encrypted_msg ⊕ ss)
+    Decrypt.py-->>User: Display plaintext
+```
+
 
 
 ## 📚 Documentation Hybrid Encryption Workflow
